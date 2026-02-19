@@ -1,3 +1,7 @@
 setuptools
 ipykernel
+pandas
+numpy
+google-cloud-storage
+pyyaml
 # -e .

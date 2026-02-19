@@ -1,0 +1,7 @@
+data_ingestion:
+  bucket_name: "my_bucket_7777"
+  bucket_file_names:
+    - "anime.csv"
+    - "anime_with_synopsis.csv"
+    - "animelist.csv"
+
