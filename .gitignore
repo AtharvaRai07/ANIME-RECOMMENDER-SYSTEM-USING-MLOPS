@@ -1,0 +1,33 @@
+__pycache__/
+*.pyc
+.DS_Store
+.idea/
+*.log
+*.sqlite3
+*.db
+*.bak
+*.swp
+*.swo
+*.tmp
+*.zip
+*.tar.gz
+*.egg-info/
+# Ignore Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+# Ignore VS Code settings
+.vscode/
+# Ignore PyCharm settings
+*.iml
+# Ignore coverage reports
+htmlcov/
+.coverage
+# Ignore pytest cache
+.pytest_cache/
+# Ignore mypy cache
+.mypy_cache/
+# Ignore Sphinx build files
+_build/
+# Ignore virtual environment directories
+venv/
+env/
+ENV/
