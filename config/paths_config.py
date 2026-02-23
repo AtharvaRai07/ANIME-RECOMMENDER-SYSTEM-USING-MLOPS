@@ -29,8 +29,8 @@ ANIME2ANIME_DECODED = os.path.join(PREPROCESSED_DATA_DIR, "anime2anime_decoded.p
 
 #################################### MODEL TRAINING ######################################
 MODEL_DIR = "artifacts/model"
-CHECKPOINT_DIR = os.path.join(MODEL_DIR, "model_checkpoints", "weights.weights.h5")
-WEIGHTS_DIR = os.path.join(MODEL_DIR, "weights")
+CHECKPOINT_DIR = os.path.join("artifacts","model_checkpoints", "weights.weights.h5")
+WEIGHTS_DIR = os.path.join("artifacts", "weights")
 MODEL_PATH = os.path.join(MODEL_DIR, "recommender_model.keras")
 ANIME_WEIGHTS_PATH = os.path.join(WEIGHTS_DIR, "anime_weights.h5")
 USER_WEIGHTS_PATH = os.path.join(WEIGHTS_DIR, "user_weights.h5")

@@ -1,5 +1,10 @@
 __pycache__/
-/artifacts/
+artifacts/raw_data
+artifacts/processed_data
+artifacts/model
+artifacts/model_checkpoints
+artifacts/weights
+
 *.pyc
 .DS_Store
 .idea/
