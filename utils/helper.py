@@ -4,10 +4,15 @@ import joblib
 from config.paths_config import *
 from collections import defaultdict, Counter
 
+def _ensure_df(df_or_path):
+    if isinstance(df_or_path, pd.DataFrame):
+        return df_or_path
+    return pd.read_csv(df_or_path)
+
 ################## 1. GET_ANIME_FRAME #################
 
 def getAnimeFrame(anime, df_path: str):
-    df = pd.read_csv(df_path)
+    df = _ensure_df(df_path)
     try:
         if isinstance(anime, int):
             return df[df.anime_id == anime]
@@ -19,7 +24,7 @@ def getAnimeFrame(anime, df_path: str):
 ################### 2. GET_ANIME_SYNOPSIS #################
 
 def getSynopsis(anime, df_path: str):
-    df = pd.read_csv(df_path)
+    df = _ensure_df(df_path)
     try:
         if isinstance(anime, int):
             return df[df.MAL_ID == anime].sypnopsis.values[0]
@@ -30,9 +35,9 @@ def getSynopsis(anime, df_path: str):
 
 #################### 3. CONTENT BASED RECOMMENDATION #################
 
-def find_similar_animes(name, anime_weights_path, anime2anime_encoded_path, anime2anime_decoded_path, df_path, synopsis_df_path, top_n = 10, return_dists = False, neg = False):
+def find_similar_animes(name, anime_weights_path, anime2anime_encoded_path, anime2anime_decoded_path, anime_df_path, synopsis_df_path, top_n = 10, return_dists = False, neg = False):
     try:
-        anime_id = getAnimeFrame(name, df_path).anime_id.values[0]
+        anime_id = getAnimeFrame(name, anime_df_path).anime_id.values[0]
         encoded_anime_id = joblib.load(anime2anime_encoded_path).get(anime_id, None)
 
         weights = joblib.load(anime_weights_path)
@@ -55,7 +60,7 @@ def find_similar_animes(name, anime_weights_path, anime2anime_encoded_path, anim
         for closest in closest_animes:
             decoded_anime_id = joblib.load(anime2anime_decoded_path).get(closest, None)
             synopsis = getSynopsis(decoded_anime_id, synopsis_df_path)
-            anime_frame = getAnimeFrame(decoded_anime_id, df_path)
+            anime_frame = getAnimeFrame(decoded_anime_id, anime_df_path)
             anime_name = anime_frame.eng_version.values[0]
             genre = anime_frame.Genres.values[0]
 
@@ -110,8 +115,8 @@ def find_similar_users(item_input, user_weights_path, user2user_encoded_path, us
 ##################### 5. GET_USER_PREFERENCES ######################
 
 def getUserPreferences(user_id, rating_df_path, df_path, plot = False):
-    rating_df = pd.read_csv(rating_df_path)
-    df = pd.read_csv(df_path)
+    rating_df = _ensure_df(rating_df_path)
+    df = _ensure_df(df_path)
 
     animes_watched_by_user = rating_df[rating_df.user_id == user_id]
 
@@ -132,9 +137,9 @@ def getUserRecommendation(similar_users, user_preferences, df_path, rating_df_pa
     recommendation_anime = []
     anime_pool = []
 
-    df = pd.read_csv(df_path)
-    rating_df = pd.read_csv(rating_df_path)
-    synopsis_df = pd.read_csv(synopsis_df_path)
+    df = _ensure_df(df_path)
+    rating_df = _ensure_df(rating_df_path)
+    synopsis_df = _ensure_df(synopsis_df_path)
 
     watched_anime = set(user_preferences.eng_version.values)
 
@@ -163,12 +168,11 @@ def getUserRecommendation(similar_users, user_preferences, df_path, rating_df_pa
 
         anime_id = frame.anime_id.values[0]
         genre = frame.Genres.values[0]
-        synopsis = getSynopsis(anime_name, synopsis_df)
 
         recommendation_anime.append({
             "anime_name": anime_name,
             "genre": genre,
-            "synopsis": synopsis,
+
             "number_of_similar_users_preferred": count
         })
 
