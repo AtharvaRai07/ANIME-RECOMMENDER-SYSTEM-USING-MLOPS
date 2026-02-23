@@ -9,3 +9,4 @@ tensorflow
 wordcloud
 joblib
 comet-ml
+dvc
