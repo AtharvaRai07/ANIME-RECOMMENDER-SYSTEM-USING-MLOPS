@@ -107,23 +107,7 @@ def find_similar_users(item_input, user_weights_path, user2user_encoded_path, us
     similar_users_df = similar_users_df[similar_users_df.user_id != user_id].reset_index(drop=True)
     return similar_users_df
 
-###################### 5. GET_FAV_GENRE ######################
-
-def getFavGenre(frame):
-
-    frame = frame.dropna()
-
-    all_genres = defaultdict(int)
-    genre_lst = []
-    for genres in frame.Genres:
-        for genre in genres.split(","):
-            genre = genre.strip()
-            genre_lst.append(genre)
-            all_genres[genre] +=1
-
-    return genre_lst
-
-##################### 6. GET_USER_PREFERENCES ######################
+##################### 5. GET_USER_PREFERENCES ######################
 
 def getUserPreferences(user_id, rating_df_path, df_path, plot = False):
     rating_df = pd.read_csv(rating_df_path)
@@ -142,7 +126,7 @@ def getUserPreferences(user_id, rating_df_path, df_path, plot = False):
 
     return anime_df_rows
 
-###################### 7. GET_USER_RECOMMENDATION ######################
+###################### 6. GET_USER_RECOMMENDATION ######################
 
 def getUserRecommendation(similar_users, user_preferences, df_path, rating_df_path, synopsis_df_path, top_n = 10):
     recommendation_anime = []
