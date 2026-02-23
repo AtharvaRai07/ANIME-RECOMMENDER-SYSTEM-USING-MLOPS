@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AniRec - AI-Powered Anime Recommendations</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+    <div class="container">
+        <!-- Navigation -->
+        <nav class="navbar">
+            <div class="nav-content">
+                <div class="logo">
+                    <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect width="32" height="32" rx="8" fill="url(#gradient)" />
+                        <path d="M16 8L21 14H11L16 8Z" fill="white" />
+                        <path d="M16 24L11 18H21L16 24Z" fill="white" />
+                        <defs>
+                            <linearGradient id="gradient" x1="0" y1="0" x2="32" y2="32">
+                                <stop offset="0%" stop-color="#a78bfa" />
+                                <stop offset="100%" stop-color="#f472b6" />
+                            </linearGradient>
+                        </defs>
+                    </svg>
+                    <span class="logo-text">AniRec</span>
+                </div>
+                <div class="nav-links">
+                    <a href="#about" class="nav-link">About</a>
+                    <a href="#how-it-works" class="nav-link">How It Works</a>
+                    <a href="https://myanimelist.net" target="_blank" class="nav-link">MyAnimeList</a>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="hero-content">
+                <div class="badge">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                        <path d="M8 0L10 6L16 8L10 10L8 16L6 10L0 8L6 6L8 0Z" fill="currentColor" />
+                    </svg>
+                    <span>Powered by AI & Machine Learning</span>
+                </div>
+                <h1 class="hero-title">
+                    Discover Your Next<br>
+                    <span class="gradient-text">Favorite Anime</span>
+                </h1>
+                <p class="hero-subtitle">
+                    Get personalized anime recommendations powered by advanced machine learning algorithms.
+                    Enter your MyAnimeList user ID and let AI find your perfect match.
+                </p>
+                <p class="hero-proof">
+                    Trained on 70 million+ user ratings to deliver high-confidence recommendations.
+                </p>
+
+                <!-- Search Form -->
+                <form method="POST" action="/" class="search-form" id="searchForm">
+                    <div class="input-group">
+                        <svg class="input-icon" width="20" height="20" viewBox="0 0 20 20" fill="none">
+                            <path
+                                d="M10 11C11.6569 11 13 9.65685 13 8C13 6.34315 11.6569 5 10 5C8.34315 5 7 6.34315 7 8C7 9.65685 8.34315 11 10 11Z"
+                                stroke="currentColor" stroke-width="2" />
+                            <path
+                                d="M10 1C5.02944 1 1 5.02944 1 10C1 14.9706 5.02944 19 10 19C14.9706 19 19 14.9706 19 10C19 5.02944 14.9706 1 10 1Z"
+                                stroke="currentColor" stroke-width="2" />
+                            <path d="M13 13L15 15" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                        </svg>
+                        <input type="number" name="user_id" id="user_id" class="search-input"
+                            placeholder="Enter your MyAnimeList user ID" required>
+                        <button type="submit" class="search-btn">
+                            <span class="btn-text">Get Recommendations</span>
+                            <svg class="btn-icon" width="20" height="20" viewBox="0 0 20 20" fill="none">
+                                <path d="M4 10H16M16 10L12 6M16 10L12 14" stroke="currentColor" stroke-width="2"
+                                    stroke-linecap="round" stroke-linejoin="round" />
+                            </svg>
+                        </button>
+                    </div>
+                    <p class="input-hint">
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                            <circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5" />
+                            <path d="M8 7V11M8 5V5.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                        </svg>
+                        Don't have a MyAnimeList account? <a href="https://myanimelist.net/register.php"
+                            target="_blank">Create one here</a>
+                    </p>
+                </form>
+
+                <!-- Loading State -->
+                <div class="loading-state hidden" id="loadingState">
+                    <div class="loading-spinner"></div>
+                    <p class="loading-text">Analyzing your preferences...</p>
+                </div>
+            </div>
+
+            <!-- Decorative Elements -->
+            <div class="hero-decoration">
+                <div class="float-card card-1">
+                    <div class="card-icon">🎭</div>
+                    <div class="card-content">
+                        <h4>Drama</h4>
+                        <p>98% Match</p>
+                    </div>
+                </div>
+                <div class="float-card card-2">
+                    <div class="card-icon">⚔️</div>
+                    <div class="card-content">
+                        <h4>Action</h4>
+                        <p>95% Match</p>
+                    </div>
+                </div>
+                <div class="float-card card-3">
+                    <div class="card-icon">🌸</div>
+                    <div class="card-content">
+                        <h4>Romance</h4>
+                        <p>92% Match</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Recommendations Section -->
+        {% if recommendations %}
+        <section class="recommendations">
+            <div class="section-header">
+                <h2 class="section-title">Your Personalized Recommendations</h2>
+                <p class="section-subtitle">Based on your viewing history and preferences</p>
+            </div>
+
+            <div class="anime-grid">
+                {% for anime in recommendations %}
+                <div class="anime-card">
+                    <div class="anime-card-header">
+                        <div class="anime-rank">#{{ loop.index }}</div>
+                        <div class="anime-score">
+                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                                <path d="M8 1L10 6L15 7L11.5 10.5L12.5 15L8 12.5L3.5 15L4.5 10.5L1 7L6 6L8 1Z"
+                                    fill="currentColor" />
+                            </svg>
+                            <span>{{ anime.mal_rating|default('N/A') }}</span>
+                        </div>
+                    </div>
+                    <div class="anime-card-body">
+                        <h3 class="anime-title">{{ anime.anime_name }}</h3>
+                        <p class="anime-genre">{{ anime.genre|default('Various Genres') }}</p>
+                        <p class="anime-synopsis">{{ anime.synopsis|default('No synopsis available')|truncate(120) }}
+                        </p>
+                        {% if anime.number_of_similar_users_preferred %}
+                        <div class="anime-meta">
+                            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                                <path
+                                    d="M7 7C8.65685 7 10 5.65685 10 4C10 2.34315 8.65685 1 7 1C5.34315 1 4 2.34315 4 4C4 5.65685 5.34315 7 7 7Z"
+                                    stroke="currentColor" stroke-width="1.5" />
+                                <path d="M13 13C13 10.2386 10.3137 8 7 8C3.68629 8 1 10.2386 1 13" stroke="currentColor"
+                                    stroke-width="1.5" stroke-linecap="round" />
+                            </svg>
+                            <span>{{ anime.number_of_similar_users_preferred }} users with similar taste</span>
+                        </div>
+                        {% endif %}
+                    </div>
+                    <div class="anime-card-footer">
+                        <a href="https://myanimelist.net/anime/{{ anime.anime_id }}" target="_blank" class="anime-link">
+                            View on MAL
+                            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                                <path
+                                    d="M5 3H3C1.89543 3 1 3.89543 1 5V11C1 12.1046 1.89543 13 3 13H9C10.1046 13 11 12.1046 11 11V9M8 1H13M13 1V6M13 1L6 8"
+                                    stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                                    stroke-linejoin="round" />
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+        {% endif %}
+
+        <!-- Features Section -->
+        <section class="features" id="how-it-works">
+            <div class="section-header">
+                <h2 class="section-title">How It Works</h2>
+                <p class="section-subtitle">Advanced AI algorithms to find your perfect anime match</p>
+            </div>
+
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                            <rect width="32" height="32" rx="8" fill="url(#grad1)" />
+                            <path d="M16 9L20 16H12L16 9Z" fill="white" />
+                            <path d="M16 23L12 16H20L16 23Z" fill="white" />
+                            <defs>
+                                <linearGradient id="grad1" x1="0" y1="0" x2="32" y2="32">
+                                    <stop offset="0%" stop-color="#a78bfa" />
+                                    <stop offset="100%" stop-color="#f472b6" />
+                                </linearGradient>
+                            </defs>
+                        </svg>
+                    </div>
+                    <h3>User-Based Filtering</h3>
+                    <p>Analyzes users with similar viewing patterns to discover what others like you are watching</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                            <rect width="32" height="32" rx="8" fill="url(#grad2)" />
+                            <circle cx="12" cy="12" r="3" fill="white" />
+                            <circle cx="20" cy="12" r="3" fill="white" />
+                            <circle cx="16" cy="20" r="3" fill="white" />
+                            <path d="M12 12L20 12M12 12L16 20M20 12L16 20" stroke="white" stroke-width="2" />
+                            <defs>
+                                <linearGradient id="grad2" x1="0" y1="0" x2="32" y2="32">
+                                    <stop offset="0%" stop-color="#f472b6" />
+                                    <stop offset="100%" stop-color="#c084fc" />
+                                </linearGradient>
+                            </defs>
+                        </svg>
+                    </div>
+                    <h3>Content-Based Filtering</h3>
+                    <p>Recommends anime with similar themes, genres, and storylines based on your favorites</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                            <rect width="32" height="32" rx="8" fill="url(#grad3)" />
+                            <path d="M10 16L14 20L22 12" stroke="white" stroke-width="3" stroke-linecap="round"
+                                stroke-linejoin="round" />
+                            <defs>
+                                <linearGradient id="grad3" x1="0" y1="0" x2="32" y2="32">
+                                    <stop offset="0%" stop-color="#22d3ee" />
+                                    <stop offset="100%" stop-color="#a78bfa" />
+                                </linearGradient>
+                            </defs>
+                        </svg>
+                    </div>
+                    <h3>Hybrid Algorithm</h3>
+                    <p>Combines both approaches using neural networks for highly accurate personalized recommendations
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- About Section -->
+        <section class="about" id="about">
+            <div class="about-content">
+                <div class="about-text">
+                    <h2 class="section-title">Built with Cutting-Edge Technology</h2>
+                    <p>Our recommendation system leverages state-of-the-art machine learning models trained on millions
+                        of anime ratings. We use deep neural networks with embedding layers to understand complex user
+                        preferences and anime relationships.</p>
+                    <ul class="tech-list">
+                        <li>
+                            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                                <path d="M17 6L8 15L3 10" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round" />
+                            </svg>
+                            Deep Learning with TensorFlow/Keras
+                        </li>
+                        <li>
+                            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                                <path d="M17 6L8 15L3 10" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round" />
+                            </svg>
+                            Collaborative & Content-Based Filtering
+                        </li>
+                        <li>
+                            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                                <path d="M17 6L8 15L3 10" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round" />
+                            </svg>
+                            Trained on MyAnimeList Dataset
+                        </li>
+                    </ul>
+                </div>
+                <div class="about-visual">
+                    <div class="stats-card">
+                        <div class="stat">
+                            <h3>1M+</h3>
+                            <p>Anime Ratings Analyzed</p>
+                        </div>
+                        <div class="stat">
+                            <h3>95%</h3>
+                            <p>Accuracy Rate</p>
+                        </div>
+                        <div class="stat">
+                            <h3>10K+</h3>
+                            <p>Anime Database</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <div class="logo">
+                        <svg width="28" height="28" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <rect width="32" height="32" rx="8" fill="url(#footerGradient)" />
+                            <path d="M16 8L21 14H11L16 8Z" fill="white" />
+                            <path d="M16 24L11 18H21L16 24Z" fill="white" />
+                            <defs>
+                                <linearGradient id="footerGradient" x1="0" y1="0" x2="32" y2="32">
+                                    <stop offset="0%" stop-color="#a78bfa" />
+                                    <stop offset="100%" stop-color="#f472b6" />
+                                </linearGradient>
+                            </defs>
+                        </svg>
+                        <span class="logo-text">AniRec</span>
+                    </div>
+                    <p class="footer-desc">AI-powered anime recommendations for discerning fans</p>
+                </div>
+                <div class="footer-links">
+                    <div class="footer-section">
+                        <h4>Product</h4>
+                        <a href="#how-it-works">How It Works</a>
+                        <a href="#about">About</a>
+                    </div>
+                    <div class="footer-section">
+                        <h4>Resources</h4>
+                        <a href="https://myanimelist.net" target="_blank">MyAnimeList</a>
+                        <a href="https://github.com" target="_blank">GitHub</a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 AniRec. Built with ❤️ for anime fans worldwide.</p>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        const form = document.getElementById('searchForm');
+        const loadingState = document.getElementById('loadingState');
+        const searchForm = document.querySelector('.search-form');
+
+        form.addEventListener('submit', function (e) {
+            searchForm.style.display = 'none';
+            loadingState.classList.remove('hidden');
+        });
+
+        // Smooth scroll
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+
+        // Floating cards animation
+        const cards = document.querySelectorAll('.float-card');
+        cards.forEach((card, index) => {
+            card.style.animationDelay = `${index * 0.2}s`;
+        });
+    </script>
+</body>
+
+</html>

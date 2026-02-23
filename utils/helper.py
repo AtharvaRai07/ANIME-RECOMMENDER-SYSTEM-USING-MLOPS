@@ -172,7 +172,6 @@ def getUserRecommendation(similar_users, user_preferences, df_path, rating_df_pa
         recommendation_anime.append({
             "anime_name": anime_name,
             "genre": genre,
-
             "number_of_similar_users_preferred": count
         })
 

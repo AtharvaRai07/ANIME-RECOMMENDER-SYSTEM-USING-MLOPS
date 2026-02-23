@@ -1,3 +1,4 @@
+import pandas as pd
 from config.paths_config import *
 from utils.helper import *
 
@@ -52,5 +53,29 @@ def hybrid_recommendation(user_id, user_weight=0.5, content_weight=0.5):
         reverse=True
     )
 
-    final = [anime for anime, score in sorted_animes[:10]]
-    print(final)
+    anime_lst = [anime for anime, score in sorted_animes[:10]]
+
+    # ---------- BUILD DETAILED RESPONSE ----------
+    recommendations = []
+    anime_df = pd.read_csv(ANIME_DF)
+    synopsis_df = pd.read_csv(SYNOPSIS_DF)
+
+    for anime_name in anime_lst:
+        anime_frame = getAnimeFrame(anime_name, anime_df)
+        if anime_frame is not None and not anime_frame.empty:
+            anime_id = anime_frame.anime_id.values[0]
+            genre = anime_frame.Genres.values[0] if pd.notna(anime_frame.Genres.values[0]) else "Various Genres"
+            synopsis = getSynopsis(anime_name, synopsis_df)
+            mal_rating = anime_frame.Score.values[0]
+            if pd.isna(mal_rating):
+                mal_rating = None
+
+            recommendations.append({
+                "anime_id": anime_id,
+                "anime_name": anime_name,
+                "genre": genre,
+                "synopsis": synopsis if synopsis else "No synopsis available",
+                "mal_rating": mal_rating
+            })
+
+    return recommendations
