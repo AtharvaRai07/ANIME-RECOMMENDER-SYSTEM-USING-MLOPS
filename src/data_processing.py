@@ -46,6 +46,7 @@ class DataProcessor:
             logging.info(f"Filtered users with at least {min_ratings} ratings. Remaining users: {self.rating_df['user_id'].nunique()}")
 
         except Exception as e:
+            logging.error(f"Error filtering users: {e}")
             raise CustomException(e, sys)
 
     def scale_ratings(self):
@@ -58,6 +59,7 @@ class DataProcessor:
             logging.info(f"Ratings scaled to range [0, 1]. Original min: {min_rating}, Original max: {max_rating}")
 
         except Exception as e:
+            logging.error(f"Error scaling ratings: {e}")
             raise CustomException(e, sys)
 
     def encode_data(self):
@@ -72,18 +74,19 @@ class DataProcessor:
             anime_ids = self.rating_df["anime_id"].unique().tolist()
             self.anime2anime_encoded = {x: i for i, x in enumerate(anime_ids)}
             self.anime2anime_decoded = {i: x for i, x in enumerate(anime_ids)}
-            self.rating_df["anime_decoded"] = self.rating_df["anime_id"].map(self.anime2anime_decoded)
+            self.rating_df["anime_encoded"] = self.rating_df["anime_id"].map(self.anime2anime_encoded)
 
             logging.info(f"Data encoding completed. Unique users: {len(user_ids)}, Unique anime: {len(anime_ids)}")
 
         except Exception as e:
+            logging.error(f"Error encoding data: {e}")
             raise CustomException(e, sys)
 
     def split_data(self, test_size=0.2, random_state=42):
         try:
             self.rating_df = self.rating_df.sample(frac=1, random_state=random_state).reset_index(drop=True)
 
-            X = self.rating_df[["user_encoded", "anime_decoded"]].values
+            X = self.rating_df[["user_encoded", "anime_encoded"]].values
             y = self.rating_df["rating"].values
 
             train_indices = int(self.rating_df.shape[0] * (1 - test_size))
@@ -103,6 +106,7 @@ class DataProcessor:
             logging.info(f"Data split into train and test sets. Train size: {len(X_train)}, Test size: {len(X_test)}")
 
         except Exception as e:
+            logging.error(f"Error splitting data: {e}")
             raise CustomException(e, sys)
 
     def save_preprocessed_data(self):
@@ -128,6 +132,7 @@ class DataProcessor:
 
             logging.info(f"Train and test arrays saved successfully. X_train: {X_TRAIN_ARRAY}, X_test: {X_TEST_ARRAY}, y_train: {Y_TRAIN}, y_test: {Y_TEST}")
         except Exception as e:
+            logging.error(f"Error saving preprocessed data: {e}")
             raise CustomException(e, sys)
 
     def process_anime_data(self):
@@ -163,6 +168,7 @@ class DataProcessor:
             logging.info(f"Anime data processed and saved successfully. Anime data path: {ANIME_DF}, Synopsis data path: {SYNOPSIS_DF}")
 
         except Exception as e:
+            logging.error(f"Error processing anime data: {e}")
             raise CustomException(e, sys)
 
     def run(self):
@@ -177,6 +183,7 @@ class DataProcessor:
 
             logging.info("Data processing completed successfully.")
         except Exception as e:
+            logging.error(f"Error in the data processing run method: {e}")
             raise CustomException(e, sys)
 
 if __name__ == "__main__":
@@ -185,6 +192,7 @@ if __name__ == "__main__":
         data_processor.run()
     except Exception as e:
         logging.error(f"Error in data processing: {e}")
+        raise CustomException(e, sys)
 
 
 

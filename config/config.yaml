@@ -5,3 +5,23 @@ data_ingestion:
     - "anime_with_synopsis.csv"
     - "animelist.csv"
   num_rows: 1000
+
+model_training:
+  embedding_size: 128
+  loss: "binary_crossentropy"
+  optimizer: "Adam"
+  metrics: ["mae", "mse"]
+  user_layer_name : "user_embedding"
+  anime_layer_name : "anime_embedding"
+  epochs : 20
+  verbose : 1
+
+  start_learing_rate : 0.0001
+  min_lr : 0.0001
+  max_lr : 0.001
+  batch_size : 10000
+
+  ramup_epochs : 5
+  sustain_epochs : 0
+  exp_decay : 0.8
+
