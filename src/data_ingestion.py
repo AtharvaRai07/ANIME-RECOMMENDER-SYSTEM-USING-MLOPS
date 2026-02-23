@@ -29,7 +29,7 @@ class DataIngestion:
                 if file_name == "animelist.csv":
                     blob = bucket.blob(file_name)
                     blob.download_to_filename(destination_path)
-                    data = pd.read_csv(destination_path, n_rows = self.data_ingestion_config.get("num_rows", 5000000))
+                    data = pd.read_csv(destination_path, nrows = self.data_ingestion_config.get("num_rows", 5000000))
                     data.to_csv(destination_path, index=False)
 
                     logging.info(f"Downloaded and truncated {file_name} to {destination_path}")

@@ -4,4 +4,4 @@ data_ingestion:
     - "anime.csv"
     - "anime_with_synopsis.csv"
     - "animelist.csv"
-  num_rows: 5000000
+  num_rows: 1000
